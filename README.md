@@ -241,7 +241,7 @@ The project uses the following technology stack.
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| Programming Language | Java 25 | Application logic |
+| Programming Language | Java 21 | Application logic |
 | Backend Framework | Spring Boot 4.1.2 | Application architecture and backend services |
 | Build Tool | Maven | Dependency management and builds |
 | Frontend Rendering | Thymeleaf | Server-rendered web pages |
