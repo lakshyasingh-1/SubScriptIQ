@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" th:if="${_csrf != null}" th:content="${_csrf.token}">
+    <meta name="csrf-header" th:if="${_csrf != null}" th:content="${_csrf.headerName}">
+    <title th:replace="${title}">SubscriptIQ</title>
+    <link rel="icon" type="image/png" th:href="@{/images/subscriptiq-logo.png}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body th:attr="hx-headers=${hxCsrfHeaders}">
+<header class="app-header sticky-top">
+    <nav class="navbar app-topbar">
+        <div class="container-fluid">
+            <button class="btn btn-sm btn-outline-secondary d-lg-none me-2" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Open navigation">☰</button>
+            <a class="navbar-brand fw-bold" th:href="${currentRole == 'CUSTOMER' ? '/portal' : currentRole == 'STAFF' ? '/staff/dashboard' : '/admin/dashboard'}">
+                <img class="brand-logo brand-logo-header" th:src="@{/images/subscriptiq-logo.png}" alt="">
+                <span>Subscript<span class="brand-accent">IQ</span></span>
+            </a>
+            <button class="btn header-icon-btn header-search-toggle d-lg-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#globalSearch" aria-controls="globalSearch" aria-expanded="false" aria-label="Open search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+            </button>
+            <form class="global-search collapse d-lg-flex" id="globalSearch"
+                  action="/search" method="get" role="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+                <input type="search" name="q" class="global-search-input" placeholder="Search customers, invoices, subscriptions..." aria-label="Search customers, invoices, and subscriptions">
+                <button class="header-search-submit" type="submit" aria-label="Search">⌕</button>
+            </form>
+            <div class="header-actions">
+                <a class="btn header-icon-btn" th:href="${currentRole == 'CUSTOMER' ? '/portal/invoices' : '/collections'}"
+                   aria-label="Open outstanding items" title="Outstanding items">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                </a>
+                <a class="btn header-icon-btn header-help-btn" href="mailto:billing@brightloop.example"
+                   aria-label="Contact support" title="Contact support">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.1 1.1-2 1.4-2 3"></path><path d="M12 17.4h.01"></path></svg>
+                </a>
+                <div class="dropdown" th:if="${currentRole != 'CUSTOMER'}">
+                    <button class="btn btn-primary header-create-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span aria-hidden="true">+</span><span>Create</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end header-menu">
+                        <li><a class="dropdown-item" href="/customers/new">New customer</a></li>
+                        <li><a class="dropdown-item" href="/subscriptions/new">New subscription</a></li>
+                        <li><a class="dropdown-item" href="/payments/new">Record payment</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown header-profile">
+                    <button class="btn header-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="header-avatar" th:text="${#strings.substring(currentUser.fullName, 0, 1)}">A</span>
+                        <span class="header-profile-copy">
+                            <strong th:text="${currentUser.fullName}">Alex Morgan</strong>
+                            <small th:text="${currentRole}">ADMIN</small>
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end header-menu header-profile-menu">
+                        <li class="header-profile-summary">
+                            <strong th:text="${currentUser.fullName}">Alex Morgan</strong>
+                            <small th:text="${currentUser.email}">alex@example.com</small>
+                            <span class="role-pill" th:text="${currentRole}">ADMIN</span>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="m-0">
+                                <button class="dropdown-item header-signout" type="submit">Sign out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="app-contextbar">
+        <span class="context-title">Subscription management / Billing workspace</span>
+        <span class="context-meta">Business date <strong th:text="${@fmt.date(today)}">31 Oct 2026</strong><span class="context-divider">|</span><span class="context-status"></span>Preview environment</span>
+    </div>
+</header>
+<div class="app-shell">
+    <aside class="offcanvas-lg offcanvas-start app-sidebar" tabindex="-1" id="appSidebar" aria-labelledby="sidebarTitle">
+        <div class="offcanvas-header d-lg-none">
+            <h2 class="h6 mb-0" id="sidebarTitle">Navigation</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="sidebar-user">
+                <div class="avatar" th:text="${#strings.substring(currentUser.fullName, 0, 1)}">A</div>
+                <div><strong th:text="${currentUser.fullName}">Alex Morgan</strong><small th:text="${currentUser.email}">alex@example.com</small></div>
+            </div>
+            <nav class="nav flex-column sidebar-nav" aria-label="Main navigation">
+                <th:block th:if="${currentRole == 'ADMIN'}">
+                    <div class="sidebar-section">Overview</div>
+                    <a class="nav-link" th:classappend="${activeNav == '/admin/dashboard' ? 'active' : ''}" href="/admin/dashboard"><span>◫</span>Dashboard</a>
+                    <div class="sidebar-section">Revenue &amp; operations</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/finance') ? 'active' : ''}" href="/admin/finance"><span>↗</span>Finance analytics</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/customers') ? 'active' : ''}" href="/customers"><span>♙</span>Customers</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/subscriptions') ? 'active' : ''}" href="/subscriptions"><span>↻</span>Subscriptions</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/invoices') ? 'active' : ''}" href="/invoices"><span>▤</span>Invoices</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/payments') ? 'active' : ''}" href="/payments"><span>₹</span>Payments</a>
+                    <div class="sidebar-section">Automation</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/billing') ? 'active' : ''}" href="/billing"><span>⏱</span>Billing center</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/collections') ? 'active' : ''}" href="/collections"><span>◎</span>Collections</a>
+                    <div class="sidebar-section">Configuration</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/products') ? 'active' : ''}" href="/admin/products"><span>▦</span>Products</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/plans') ? 'active' : ''}" href="/admin/plans"><span>◷</span>Plans</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/taxes') ? 'active' : ''}" href="/admin/taxes"><span>%</span>Taxes</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/discounts') ? 'active' : ''}" href="/admin/discounts"><span>◇</span>Discounts</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/staff') ? 'active' : ''}" href="/admin/staff"><span>♧</span>Staff &amp; roles</a>
+                    <div class="sidebar-section">System tools</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/admin/clock') ? 'active' : ''}" href="/admin/clock"><span>◷</span>Demo clock</a>
+                </th:block>
+                <th:block th:if="${currentRole == 'STAFF'}">
+                    <div class="sidebar-section">Overview</div>
+                    <a class="nav-link" th:classappend="${activeNav == '/staff/dashboard' ? 'active' : ''}" href="/staff/dashboard"><span>◫</span>Dashboard</a>
+                    <div class="sidebar-section">Revenue &amp; operations</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/customers') ? 'active' : ''}" href="/customers"><span>♙</span>Customers</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/subscriptions') ? 'active' : ''}" href="/subscriptions"><span>↻</span>Subscriptions</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/invoices') ? 'active' : ''}" href="/invoices"><span>▤</span>Invoices</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/payments') ? 'active' : ''}" href="/payments"><span>₹</span>Payments</a>
+                    <div class="sidebar-section">Automation</div>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/billing') ? 'active' : ''}" href="/billing"><span>⏱</span>Billing center</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/collections') ? 'active' : ''}" href="/collections"><span>◎</span>Collections</a>
+                </th:block>
+                <th:block th:if="${currentRole == 'CUSTOMER'}">
+                    <div class="sidebar-section">My workspace</div>
+                    <a class="nav-link" th:classappend="${activeNav == '/portal' ? 'active' : ''}" href="/portal"><span>⌂</span>Home</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/portal/subscriptions') ? 'active' : ''}" href="/portal/subscriptions"><span>↻</span>My subscriptions</a>
+                    <a class="nav-link" th:classappend="${#strings.startsWith(activeNav, '/portal/invoices') ? 'active' : ''}" href="/portal/invoices"><span>▤</span>My invoices</a>
+                </th:block>
+            </nav>
+        </div>
+    </aside>
+    <div class="app-main">
+        <div th:if="${clockOffsetDays != 0}" class="simulated-banner">
+            Demo date is simulated <strong th:text="${@fmt.date(today)}">date</strong>
+            <span class="ms-1" th:text="|(${clockOffsetDays > 0 ? '+' : ''}${clockOffsetDays} days)|"></span>
+        </div>
+        <div class="container-fluid page-container">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="status">
+                <span th:text="${success}">Saved.</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Something went wrong.</div>
+            <div th:if="${demoError}" class="alert alert-danger" role="alert" data-demo-error>Please review the highlighted fields and try again.</div>
+            <main th:replace="${content}"></main>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+        <div class="modal-header"><h2 class="modal-title fs-5" id="confirmModalTitle">Please confirm</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body" id="confirmModalMessage">Are you sure you want to continue?</div>
+        <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Go back</button><button type="button" class="btn btn-danger" id="confirmModalContinue">Continue</button></div>
+    </div></div>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/htmx.min.js}"></script>
+<script th:src="@{/vendor/chart.umd.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/password-checklist.js}"></script>
+<script th:src="@{/js/finance-charts.js}"></script>
+</body>
+</html>

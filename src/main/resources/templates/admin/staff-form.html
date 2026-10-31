@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Invite team member · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Invite a team member', null, null)}"></div>
+<form th:action="@{/admin/staff}" th:object="${form}" method="post"><div class="card mb-3"><div class="card-body row g-3">
+    <div class="col-md-6"><label class="form-label" for="fullName">Full name</label><input id="fullName" class="form-control" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{fullName}"></div></div>
+    <div class="col-md-6"><label class="form-label" for="email">Email</label><input id="email" class="form-control" type="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{email}"></div></div>
+    <div class="col-md-6"><label class="form-label" for="password">Temporary password</label><input id="password" class="form-control" type="password" th:field="*{password}" autocomplete="new-password" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{password}"></div><div class="form-text">At least 9 characters with uppercase, lowercase, and a special character.</div></div>
+    <div class="col-md-6"><label class="form-label" for="role">Role</label><select id="role" class="form-select" th:field="*{role}" th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'"><option th:each="option : ${roles}" th:value="${option}" th:text="${option}">STAFF</option></select><div class="invalid-feedback" th:errors="*{role}"></div></div>
+</div></div><button class="btn btn-primary">Create account</button> <a class="btn btn-light" href="/admin/staff">Cancel</a></form>
+</main></body></html>

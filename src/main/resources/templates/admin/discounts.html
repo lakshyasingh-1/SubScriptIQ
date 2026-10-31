@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Discounts · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Discounts', 'New discount', '/admin/discounts/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 search-toolbar" method="get" action="/admin/discounts"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search discount, type or scope" aria-label="Search discounts"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/admin/discounts">Clear</a></div></form></div><div class="table-responsive" th:if="${page != null and !page.empty}"><table class="table"><thead><tr><th>Discount</th><th>Type</th><th>Scope</th><th>Usage</th><th>Validity</th><th>Status</th></tr></thead><tbody>
+    <tr th:each="discount : ${page.content}"><td class="fw-semibold" th:text="${discount.name}">Launch offer</td><td th:text="|${discount.value}${discount.type == 'PERCENTAGE' ? '%' : ''}|">10%</td>
+        <td th:text="${discount.scope.toString()}">SUBSCRIPTION</td><td th:text="${discount.usageLimit != null ? 'used ' + discount.usedCount + ' of ' + discount.usageLimit : 'Unlimited'}">used 42 of 100</td>
+        <td th:text="|${@fmt.date(discount.startDate)} – ${@fmt.date(discount.endDate)}|"></td><td><span th:replace="~{fragments/ui :: statusBadge(${discount.active ? 'ACTIVE' : 'CLOSED'})}"></span></td></tr>
+</tbody></table></div><th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Create a discount to reward customers.' : 'No discounts found. Try a different search.'})}"></div></th:block><div class="card-body border-top"><div th:replace="~{fragments/ui :: pagination(${page}, '/admin/discounts', ${q}, null, null)}"></div></div></div>
+</main></body></html>

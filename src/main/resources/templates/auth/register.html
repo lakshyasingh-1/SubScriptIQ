@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Create account · SubscriptIQ</title>
+    <link rel="icon" type="image/png" th:href="@{/images/subscriptiq-logo.png}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body>
+<div class="auth-wrap"><div class="auth-card">
+    <div class="auth-brand"><img class="brand-logo brand-logo-register" th:src="@{/images/subscriptiq-logo.png}" alt=""><span>Subscript<span class="brand-accent">IQ</span></span></div>
+    <p class="eyebrow">GET STARTED</p><h1 class="h3 fw-bold">Create your account</h1>
+    <p class="text-secondary mb-4">Set up your Brightloop workspace in moments.</p>
+    <div th:if="${registrationError}" class="alert alert-danger" role="alert">Please review the highlighted fields and try again.</div>
+    <form th:action="@{/register}" th:object="${form}" method="post">
+        <div class="mb-3"><label class="form-label" for="fullName">Full name</label><input id="fullName" class="form-control" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{fullName}"></div></div>
+        <div class="mb-3"><label class="form-label" for="email">Work email</label><input id="email" type="email" class="form-control" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{email}"></div></div>
+        <div class="mb-3"><label class="form-label" for="newPassword">Password</label><input id="newPassword" type="password" class="form-control" th:field="*{password}" data-password-input autocomplete="new-password" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{password}"></div></div>
+        <ul class="checklist mb-4" aria-label="Password requirements">
+            <li data-rule="length">At least 9 characters</li><li data-rule="uppercase">One uppercase letter</li>
+            <li data-rule="lowercase">One lowercase letter</li><li data-rule="special">One special character</li>
+        </ul>
+        <button class="btn btn-primary w-100 py-2" type="submit" data-password-submit disabled>Create account</button>
+    </form>
+    <p class="text-center text-secondary small mt-4 mb-0">Already registered? <a href="/login">Sign in</a></p>
+</div></div>
+<script th:src="@{/js/password-checklist.js}"></script>
+</body></html>

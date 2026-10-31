@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Customer · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Customer details', null, null)}"></div>
+<form th:action="@{/customers}" th:object="${form}" method="post"><div class="card mb-3"><div class="card-body row g-3">
+    <div class="col-md-6"><label class="form-label">Name</label><input class="form-control" th:field="*{name}"></div>
+    <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email" th:field="*{email}"></div>
+    <div class="col-md-6"><label class="form-label">Company</label><input class="form-control" th:field="*{company}"></div>
+    <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" type="tel" th:field="*{phone}"></div>
+    <div class="col-12"><label class="form-label">Billing address</label><textarea class="form-control" rows="3" th:field="*{address}"></textarea></div>
+</div></div><button class="btn btn-primary">Save customer</button> <a class="btn btn-light" href="/customers">Cancel</a></form>
+</main></body></html>

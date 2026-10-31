@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Record payment · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Record a payment', null, null)}"></div>
+<form th:action="@{/payments}" th:object="${form}" method="post">
+    <div class="card mb-3"><div class="card-body row g-3">
+        <div class="col-md-6"><label class="form-label" for="customerId">Customer</label><select class="form-select" id="customerId" name="customerId" hx-get="/payments/outstanding" hx-target="#outstandingList" hx-swap="outerHTML" hx-trigger="change"><option value="">Choose customer</option><option th:each="customer : ${customers}" th:value="${customer.id}" th:text="${customer.name}"></option></select></div>
+        <div class="col-md-6"><label class="form-label" for="amount">Amount received</label><input class="form-control" id="amount" type="number" step="0.01" min="0.01" th:field="*{amount}" data-payment-amount required></div>
+        <div class="col-12"><label class="form-label">Outstanding invoice</label><div id="outstandingList" th:fragment="outstandingList">
+            <div class="list-group" th:if="${outstandingInvoices != null and !#lists.isEmpty(outstandingInvoices)}">
+                <label class="list-group-item d-flex gap-3 align-items-start" th:each="invoice : ${outstandingInvoices}" data-outstanding-row th:attr="data-outstanding=${invoice.outstanding.stripTrailingZeros().toPlainString()}">
+                    <input class="form-check-input mt-1" type="radio" name="invoiceId" th:value="${invoice.id}" th:checked="${form.invoiceId != null and form.invoiceId.toString() == invoice.id.toString()}">
+                    <span class="flex-grow-1"><span class="fw-semibold d-block" th:text="|${invoice.number} · ${invoice.customer.name}|"></span><small class="text-secondary" th:text="|Due ${@fmt.date(invoice.dueDate)} · Outstanding ${@fmt.money(invoice.outstanding)}|"></small></span><span th:replace="~{fragments/ui :: statusBadge(${invoice.status})}"></span>
+                </label>
+            </div><div th:if="${outstandingInvoices == null or #lists.isEmpty(outstandingInvoices)}" class="text-secondary small py-3">No outstanding invoices for this customer.</div>
+        </div></div>
+        <div class="col-md-6"><label class="form-label" for="method">Payment method</label><select class="form-select" id="method" th:field="*{method}"><option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option></select></div>
+        <div class="col-md-6"><label class="form-label" for="paidOn">Payment date</label><input class="form-control" type="date" id="paidOn" name="paidOn" th:value="${#temporals.format(today, 'yyyy-MM-dd')}"></div>
+        <div class="col-12"><label class="form-label" for="note">Note</label><input class="form-control" id="note" th:field="*{note}" placeholder="Optional reference"></div>
+    </div></div><div class="d-flex gap-2"><button class="btn btn-primary">Save payment</button><a class="btn btn-light" href="/payments">Cancel</a></div>
+</form>
+</main></body></html>

@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Taxes · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Taxes', 'New tax', '/admin/taxes/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 search-toolbar" method="get" action="/admin/taxes"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search tax name or rate" aria-label="Search taxes"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/admin/taxes">Clear</a></div></form></div><div class="table-responsive" th:if="${page != null and !page.empty}"><table class="table"><thead><tr><th>Tax name</th><th>Rate</th><th>Status</th></tr></thead><tbody>
+    <tr th:each="tax : ${page.content}"><td th:text="${tax.name}">GST</td><td th:text="|${tax.ratePercent}%|">18%</td><td><span th:replace="~{fragments/ui :: statusBadge(${tax.active ? 'ACTIVE' : 'CLOSED'})}"></span></td></tr>
+</tbody></table></div><th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Add a tax rate for your products.' : 'No taxes found. Try a different search.'})}"></div></th:block><div class="card-body border-top"><div th:replace="~{fragments/ui :: pagination(${page}, '/admin/taxes', ${q}, null, null)}"></div></div></div>
+</main></body></html>

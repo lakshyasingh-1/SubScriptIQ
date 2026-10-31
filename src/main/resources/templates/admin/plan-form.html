@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Plan · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Plan details', null, null)}"></div>
+<form th:action="@{/admin/plans}" th:object="${form}" method="post"><div class="card mb-3"><div class="card-body"><div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Plan name</label><input class="form-control" th:field="*{name}"></div>
+    <div class="col-md-6"><label class="form-label">Product</label><select class="form-select" name="productId"><option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option></select></div>
+    <div class="col-md-4"><label class="form-label">Price</label><input class="form-control" type="number" step="0.01" th:field="*{price}"></div>
+    <div class="col-md-4"><label class="form-label">Billing period</label><select class="form-select" th:field="*{billingPeriod}"><option th:each="period : ${periods}" th:value="${period}" th:text="${period}"></option></select></div>
+    <div class="col-md-4"><label class="form-label">Minimum quantity</label><input class="form-control" type="number" min="1" th:field="*{minQuantity}"></div>
+    <div class="col-md-6"><label class="form-label">Available from</label><input class="form-control" type="date" name="availableFrom"></div>
+    <div class="col-md-6"><label class="form-label">Available to</label><input class="form-control" type="date" name="availableTo"></div>
+    <div class="col-12"><div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" th:field="*{autoClose}"><label class="form-check-label">Auto-close at expiry</label></div>
+        <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" th:field="*{allowEarlyClose}"><label class="form-check-label">Allow early close</label></div>
+        <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" th:field="*{allowPause}"><label class="form-check-label">Allow pause</label></div>
+        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" th:field="*{allowRenew}"><label class="form-check-label">Allow renewal</label></div></div>
+</div></div></div><div class="d-flex gap-2"><button class="btn btn-primary">Save plan</button><a class="btn btn-light" href="/admin/plans">Cancel</a></div></form>
+</main></body></html>

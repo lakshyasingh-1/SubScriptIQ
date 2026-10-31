@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Page unavailable · SubscriptIQ</title>
+    <link rel="icon" type="image/png" th:href="@{/images/subscriptiq-logo.png}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><div class="auth-wrap"><div class="auth-card text-center">
+    <img class="brand-logo brand-logo-error mx-auto mb-4" th:src="@{/images/subscriptiq-logo.png}" alt="SubscriptIQ"><p class="eyebrow">BRIGHTLOOP SOFTWARE</p>
+    <h1 class="display-6 fw-bold" th:text="${status != null ? status : 'Oops'}">Oops</h1>
+    <p class="text-secondary"
+       th:text="${status == 403 ? 'Your account does not have permission to access this page.' : 'We couldn’t find that page or something went wrong. Your work is safe.'}">
+        We couldn’t find that page or something went wrong. Your work is safe.
+    </p>
+    <a class="btn btn-primary mt-2" href="/">Return to your workspace</a>
+</div></div></body></html>

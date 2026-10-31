@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Search · SubscriptIQ</title></head><body><main>
+<div class="page-heading d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div><p class="eyebrow mb-1">SUBSCRIPTIQ WORKSPACE</p><h1 class="h3 mb-0">Search results</h1></div>
+    <form class="global-search" action="/search" method="get" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input type="search" name="q" class="global-search-input" th:value="${q}" placeholder="Search customers, invoices, subscriptions..." aria-label="Search all records">
+        <button class="btn btn-sm btn-primary" type="submit">Search</button>
+        <a class="btn btn-sm btn-outline-secondary" href="/search">Clear</a>
+    </form>
+</div>
+<div class="card">
+    <div class="list-group list-group-flush" th:if="${!#lists.isEmpty(results)}">
+        <a class="list-group-item list-group-item-action p-3 d-flex align-items-center justify-content-between gap-3"
+           th:each="result : ${results}" th:href="${result.href}">
+            <span class="min-w-0"><span class="badge text-bg-light text-primary me-2" th:text="${result.type}">Invoice</span>
+                <strong th:text="${result.title}">INV-2026-031</strong>
+                <small class="d-block text-secondary mt-1" th:text="${result.detail}">Customer details</small>
+            </span>
+            <span class="text-primary" aria-hidden="true">→</span>
+        </a>
+    </div>
+    <div th:if="${#lists.isEmpty(results)}">
+        <div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Enter a search term to find customers, invoices, and subscriptions.' : 'No results found. Try a different search.'})}"></div>
+    </div>
+</div>
+</main></body></html>

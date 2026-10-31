@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Customers · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Customers', 'Add customer', '/customers/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 search-toolbar" method="get" action="/customers"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search by name, company or email" aria-label="Search customers"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/customers">Clear</a></div></form></div>
+<div class="table-responsive" th:if="${page != null and !page.empty}"><table class="table"><thead><tr><th>Customer</th><th>Company</th><th>Email</th><th>Phone</th><th></th></tr></thead><tbody>
+    <tr th:each="customer : ${page.content}"><td class="fw-semibold"><a th:href="@{|/customers/${customer.id}|}" th:text="${customer.name}">Northstar Labs</a></td><td th:text="${customer.company}"></td><td th:text="${customer.email}"></td><td th:text="${customer.phone}"></td><td><a th:href="@{|/customers/${customer.id}/edit|}">Edit</a></td></tr>
+</tbody></table></div><th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Customers will appear here when you add them.' : 'No customers found. Try a different search.'})}"></div></th:block>
+<div class="card-body border-top"><div th:replace="~{fragments/ui :: pagination(${page}, '/customers', ${q}, null, null)}"></div></div></div>
+</main></body></html>

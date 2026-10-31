@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>My subscriptions · SubscriptIQ</title></head><body><main><div class="portal-shell">
+<div th:replace="~{fragments/ui :: pageHeader('My subscriptions', null, null)}"></div>
+<form class="row g-2 mb-3 search-toolbar" method="get" action="/portal/subscriptions"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search subscriptions" aria-label="Search my subscriptions"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/portal/subscriptions">Clear</a></div></form>
+<div class="card" th:if="${page != null and !page.empty}"><div class="list-group list-group-flush"><a class="list-group-item list-group-item-action p-3" th:each="subscription : ${page.content}" th:href="@{|/portal/subscriptions/${subscription.id}|}"><div class="d-flex justify-content-between gap-2"><div><strong th:text="${subscription.plan.name}"></strong><p class="small text-secondary mb-1" th:text="|${subscription.number} · ${subscription.plan.billingPeriod}|"></p><small class="text-secondary" th:text="|Next billing ${@fmt.date(subscription.nextBillingDate)}|"></small></div><span th:replace="~{fragments/ui :: statusBadge(${subscription.status})}"></span></div></a></div></div>
+<th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Your subscriptions will appear here.' : 'No subscriptions found. Try a different search.'})}"></div></th:block>
+<div class="card-body"><div th:replace="~{fragments/ui :: pagination(${page}, '/portal/subscriptions', ${q}, null, null)}"></div></div>
+</div></main></body></html>

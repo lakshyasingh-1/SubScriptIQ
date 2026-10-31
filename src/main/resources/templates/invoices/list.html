@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Invoices · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Invoices', 'Record payment', '/payments/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 align-items-center search-toolbar" method="get" action="/invoices" hx-get="/invoices/rows" hx-target="#invoiceRows" hx-swap="outerHTML" hx-trigger="keyup changed delay:350ms from:input, change from:input, change from:select" hx-sync="this:replace">
+    <div class="col-md-4 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search invoice or customer" aria-label="Search invoices"></div>
+    <div class="col-md-3 search-filter"><select class="form-select" name="status"><option value="">All statuses</option><option th:each="item : ${ {'DRAFT','CONFIRMED','PAID','CANCELLED'} }" th:value="${item}" th:selected="${status == item}" th:text="${item}"></option></select></div>
+    <div class="col-md-2 search-filter"><div class="form-check"><input class="form-check-input" id="overdueOnly" type="checkbox" name="overdueOnly" value="true" th:checked="${overdueOnly}"><label class="form-check-label small" for="overdueOnly">Overdue only</label></div></div>
+    <div class="col-md-2 search-action"><button class="btn btn-primary" type="submit">Filter</button></div><div class="col-md-1 search-action"><a class="btn btn-outline-secondary" href="/invoices">Clear</a></div></form></div>
+    <div id="invoiceRows" th:fragment="rows">
+        <div class="table-responsive" th:if="${page != null and !page.empty}"><table class="table"><thead><tr><th>Invoice</th><th>Customer</th><th>Invoice date</th><th>Due date</th><th>Status</th><th>Outstanding</th><th>Total</th></tr></thead><tbody>
+            <tr th:each="invoice : ${page.content}" th:classappend="${invoice.status.toString() == 'CONFIRMED' and invoice.outstanding > 0 and invoice.dueDate.isBefore(today) ? 'table-danger' : ''}">
+                <td><a th:href="@{|/invoices/${invoice.id}|}" th:text="${invoice.number}">INV-2026-031</a></td><td th:text="${invoice.customer.name}"></td>
+                <td th:text="${@fmt.date(invoice.invoiceDate)}"></td><td th:text="${@fmt.date(invoice.dueDate)}"></td>
+                <td><span th:replace="~{fragments/ui :: statusBadge(${invoice.status})}"></span></td>
+                <td class="fw-semibold" th:text="${@fmt.money(invoice.outstanding)}"></td><td th:text="${@fmt.money(invoice.total)}"></td>
+            </tr></tbody></table></div>
+        <th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'No invoices match the selected filters.' : 'No invoices found. Try a different search.'})}"></div></th:block>
+        <div class="card-body border-top"><div th:replace="~{fragments/ui :: pagination(${page}, '/invoices', ${q}, ${status}, ${overdueOnly})}"></div></div>
+    </div>
+</div>
+</main></body></html>

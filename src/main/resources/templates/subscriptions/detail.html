@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Subscription details · SubscriptIQ</title></head><body><main>
+<div class="page-heading d-flex flex-wrap justify-content-between align-items-center gap-3"><div><p class="eyebrow mb-1" th:text="${subscription.number}">SUB-2026-001</p><h1 class="h3 mb-0" th:text="${subscription.plan.name}">Professional</h1><p class="text-secondary mb-0" th:text="${subscription.customer.name}">Customer</p></div><div class="d-flex gap-2 align-items-center"><span th:replace="~{fragments/ui :: statusBadge(${subscription.status})}"></span></div></div>
+<div class="card mb-4"><div class="card-body"><div class="status-stepper">
+    <div class="step" th:classappend="${subscription.status.toString() == 'DRAFT' ? 'current' : 'complete'}"><span class="step-dot">1</span>Draft</div><div class="step-line"></div>
+    <div class="step" th:classappend="${subscription.status.toString() == 'QUOTATION' ? 'current' : (subscription.status.toString() == 'DRAFT' ? '' : 'complete')}"><span class="step-dot">2</span>Quotation</div><div class="step-line"></div>
+    <div class="step" th:classappend="${subscription.status.toString() == 'CONFIRMED' ? 'current' : (subscription.status.toString() == 'ACTIVE' or subscription.status.toString() == 'CLOSED' ? 'complete' : '')}"><span class="step-dot">3</span>Confirmed</div><div class="step-line"></div>
+    <div class="step" th:classappend="${subscription.status.toString() == 'ACTIVE' ? 'current' : (subscription.status.toString() == 'CLOSED' ? 'complete' : '')}"><span class="step-dot">4</span>Active</div><div class="step-line"></div>
+    <div class="step" th:classappend="${subscription.status.toString() == 'CLOSED' ? 'current' : ''}"><span class="step-dot">5</span>Closed</div>
+</div><div th:if="${subscription.status.toString() == 'PAUSED'}" class="alert alert-warning mt-3 mb-0">This subscription is paused.</div></div></div>
+<div class="card mb-4"><div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2"><h2 class="h6 mb-0">Subscription lines</h2><div class="d-flex flex-wrap gap-2">
+    <form th:each="action : ${actions}" th:if="${action == 'send-quotation' or action == 'confirm' or action == 'activate' or action == 'pause' or action == 'resume' or action == 'close' or action == 'renew' or action == 'cancel'}" th:action="@{|/subscriptions/${subscription.id}/transition/${action}|}" method="post">
+        <button class="btn btn-sm btn-outline-primary" th:attr="data-confirm=${action == 'close' or action == 'cancel' ? 'Are you sure you want to ' + action + ' this subscription?' : null}" th:text="${#strings.capitalize(#strings.replace(action, '-', ' '))}">Confirm</button>
+    </form></div></div>
+    <div id="linesPanel" th:fragment="linesPanel" class="card-body">
+        <div class="table-responsive"><table class="table"><thead><tr><th>Product</th><th>Variant</th><th>Quantity</th><th>Unit price</th><th>Tax rate</th><th>Amount</th><th></th></tr></thead><tbody>
+            <tr th:each="line : ${lines}"><td th:text="${line.product.name}"></td><td th:text="${line.variant != null ? line.variant.value : '—'}"></td><td th:text="${line.quantity}"></td><td th:text="${@fmt.money(line.unitPrice)}"></td><td th:text="|${line.taxRatePercent}%|"></td><td th:text="${@fmt.money(line.amount)}"></td>
+                <td><form th:action="@{|/subscriptions/${subscription.id}/lines|}" method="post" th:attr="hx-post=@{|/subscriptions/${subscription.id}/lines|}, hx-target='#linesPanel', hx-swap='outerHTML'"><input type="hidden" name="removeLineId" th:value="${line.id}"><button class="btn btn-sm btn-outline-danger" type="submit" aria-label="Remove line" data-confirm="Remove this subscription line?">Remove</button></form></td></tr>
+        </tbody></table></div>
+        <form class="row g-2 mt-3" th:action="@{|/subscriptions/${subscription.id}/lines|}" method="post" th:attr="hx-post=@{|/subscriptions/${subscription.id}/lines|}, hx-target='#linesPanel', hx-swap='outerHTML'">
+            <div class="col-md-8"><select class="form-select" name="productId"><option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option></select></div><div class="col-md-2"><input class="form-control" type="number" name="quantity" min="1" value="1" aria-label="Quantity"></div><div class="col-md-2"><button class="btn btn-outline-primary w-100" type="submit">Add line</button></div>
+        </form>
+    </div>
+</div>
+<div class="card"><div class="card-header"><h2 class="h6 mb-0">Invoices</h2></div><div class="table-responsive"><table class="table"><thead><tr><th>Invoice</th><th>Due date</th><th>Status</th><th>Total</th></tr></thead><tbody><tr th:each="invoice : ${invoices}"><td><a th:href="@{|/invoices/${invoice.id}|}" th:text="${invoice.number}"></a></td><td th:text="${@fmt.date(invoice.dueDate)}"></td><td><span th:replace="~{fragments/ui :: statusBadge(${invoice.status})}"></span></td><td th:text="${@fmt.money(invoice.total)}"></td></tr></tbody></table></div></div>
+</main></body></html>

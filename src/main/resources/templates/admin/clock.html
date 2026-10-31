@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Demo clock · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Demo clock', null, null)}"></div>
+<div class="row g-3"><div class="col-lg-7"><div class="card"><div class="card-body">
+    <p class="eyebrow">SIMULATED BUSINESS DATE</p><div class="display-6 fw-bold" th:text="${@fmt.date(simulatedDate)}">31 Oct 2026</div>
+    <p class="text-secondary mt-2">Current offset: <strong th:text="|${offsetDays > 0 ? '+' : ''}${offsetDays} days|">0 days</strong>. The simulation is stored in this browser session.</p>
+    <div class="d-flex flex-wrap gap-2 mt-4"><form th:each="increment : ${clockSteps}" th:action="@{|/admin/clock/advance/${increment}|}" method="post"><button class="btn btn-outline-primary" th:text="|+${increment} day${increment == 1 ? '' : 's'}|">+1 day</button></form>
+        <form th:action="@{/admin/clock/reset}" method="post"><button class="btn btn-light">Reset</button></form></div>
+</div></div></div><div class="col-lg-5"><div class="card h-100"><div class="card-body"><h2 class="h6">Useful for demos</h2><p class="small text-secondary mb-0">Move time forward to preview due dates, renewals, overdue invoices, and billing schedules. No underlying dates or records are modified.</p></div></div></div></div>
+</main></body></html>

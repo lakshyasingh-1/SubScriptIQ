@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Team · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Team members', 'Invite staff', '/admin/staff/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 search-toolbar" method="get" action="/admin/staff"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search by name, email or role" aria-label="Search staff"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/admin/staff">Clear</a></div></form></div><div class="table-responsive" th:if="${!#lists.isEmpty(staff)}"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr></thead><tbody>
+    <tr th:each="member : ${staff}"><td class="fw-semibold" th:text="${member.fullName}">Samira Patel</td><td th:text="${member.email}">staff@example.com</td><td th:text="${member.role.toString()}">STAFF</td><td><span th:replace="~{fragments/ui :: statusBadge(${member.enabled ? 'ACTIVE' : 'CLOSED'})}"></span></td></tr>
+</tbody></table></div><th:block th:if="${#lists.isEmpty(staff)}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Invite your first team member.' : 'No team members found. Try a different search.'})}"></div></th:block></div>
+</main></body></html>

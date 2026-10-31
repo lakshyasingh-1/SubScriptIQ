@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>My invoices · SubscriptIQ</title></head><body><main><div class="portal-shell">
+<div th:replace="~{fragments/ui :: pageHeader('My invoices', null, null)}"></div>
+<form class="row g-2 mb-3 search-toolbar" method="get" action="/portal/invoices"><div class="col-sm-8 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search invoices" aria-label="Search my invoices"></div><div class="col-sm-2 search-action"><button class="btn btn-primary" type="submit">Search</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/portal/invoices">Clear</a></div></form>
+<div class="card" th:if="${page != null and !page.empty}"><div class="list-group list-group-flush"><a class="list-group-item list-group-item-action p-3" th:each="invoice : ${page.content}" th:href="@{|/portal/invoices/${invoice.id}|}"><div class="d-flex justify-content-between gap-2"><div><strong th:text="${invoice.number}"></strong><small class="d-block text-secondary" th:text="|Issued ${@fmt.date(invoice.invoiceDate)} · Due ${@fmt.date(invoice.dueDate)}|"></small></div><div class="text-end"><strong class="d-block" th:text="${@fmt.money(invoice.outstanding)}"></strong><span th:replace="~{fragments/ui :: statusBadge(${invoice.status})}"></span></div></div></a></div></div>
+<th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'You have no invoices yet.' : 'No invoices found. Try a different search.'})}"></div></th:block>
+<div class="card-body"><div th:replace="~{fragments/ui :: pagination(${page}, '/portal/invoices', ${q}, null, null)}"></div></div>
+</div></main></body></html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="statusBadge(status)">
+    <span th:with="value=${status == null ? 'UNKNOWN' : status.toString()},
+        color=${value == 'DRAFT' ? 'secondary' : value == 'QUOTATION' ? 'info' : value == 'CONFIRMED' ? 'primary' :
+        value == 'ACTIVE' ? 'success' : value == 'PAUSED' ? 'warning' : value == 'CLOSED' ? 'dark' :
+        value == 'PAID' ? 'success' : value == 'CANCELLED' ? 'danger' : value == 'OVERDUE' ? 'danger' : 'secondary'}"
+          th:class="|badge text-bg-${color}|" th:text="${value}">STATUS</span>
+</th:block>
+<th:block th:fragment="money(amount)"><span th:text="${@fmt.money(amount)}">₹0.00</span></th:block>
+<nav th:fragment="pagination(page, baseUrl, q, status, overdueOnly)" th:if="${page != null and page.totalPages > 1}" aria-label="Pagination">
+    <ul class="pagination pagination-sm justify-content-end mb-0">
+        <li class="page-item" th:classappend="${page.first ? 'disabled' : ''}">
+            <a class="page-link" th:href="@{${baseUrl}(page=${page.number - 1}, q=${q}, status=${status}, overdueOnly=${overdueOnly})}">Previous</a></li>
+        <li class="page-item disabled"><span class="page-link" th:text="|${page.number + 1} / ${page.totalPages}|">1 / 1</span></li>
+        <li class="page-item" th:classappend="${page.last ? 'disabled' : ''}">
+            <a class="page-link" th:href="@{${baseUrl}(page=${page.number + 1}, q=${q}, status=${status}, overdueOnly=${overdueOnly})}">Next</a></li>
+    </ul>
+</nav>
+<div th:fragment="pageHeader(title, actionLabel, actionUrl)" class="page-heading d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div><p class="eyebrow mb-1">SUBSCRIPTIQ WORKSPACE</p><h1 class="h3 mb-0" th:text="${title}">Page title</h1></div>
+    <a th:if="${actionUrl != null and actionLabel != null}" class="btn btn-primary" th:href="${actionUrl}" th:text="${actionLabel}">Create</a>
+</div>
+<div th:fragment="emptyState(message)" class="empty-state text-center">
+    <div class="empty-icon">⌕</div><h2 class="h5">Nothing here yet</h2><p class="text-secondary mb-0" th:text="${message}">Try another search or add your first item.</p>
+</div>
+<div th:fragment="fieldError(field)" th:if="${#fields.hasErrors(field)}" class="invalid-feedback d-block" th:errors="*{__${field}__}">Invalid field</div>
+</body>
+</html>

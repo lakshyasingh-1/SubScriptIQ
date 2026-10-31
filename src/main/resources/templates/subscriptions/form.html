@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>New subscription · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Create subscription', null, null)}"></div>
+<form th:action="@{/subscriptions}" th:object="${form}" method="post"><div class="card mb-3"><div class="card-body row g-3">
+    <div class="col-md-6"><label class="form-label">Customer</label><select class="form-select" name="customerId" required><option value="">Choose a customer</option><option th:each="customer : ${customers}" th:value="${customer.id}" th:text="|${customer.name} · ${customer.email}|"></option></select></div>
+    <div class="col-md-6"><label class="form-label">Plan</label><select class="form-select" name="planId" required><option value="">Choose a plan</option><option th:each="plan : ${plans}" th:value="${plan.id}" th:text="|${plan.name} · ${@fmt.money(plan.price)} / ${plan.billingPeriod}|"></option></select></div>
+    <div class="col-md-4"><label class="form-label">Start date</label><input class="form-control" type="date" name="startDate"></div>
+    <div class="col-md-4"><label class="form-label">Payment terms (days)</label><input class="form-control" type="number" min="0" th:field="*{paymentTermsDays}"></div>
+    <div class="col-md-4"><label class="form-label">Quotation valid until</label><input class="form-control" type="date" name="quotationValidUntil"></div>
+</div></div><div class="alert alert-info small">The first subscription line will use the selected plan. Invoice totals are calculated by the billing service.</div>
+<button class="btn btn-primary">Create draft</button> <a class="btn btn-light" href="/subscriptions">Cancel</a></form>
+</main></body></html>

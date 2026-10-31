@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<head><title>Products · SubscriptIQ</title></head><body><main>
+<div th:replace="~{fragments/ui :: pageHeader('Products', 'New product', '/admin/products/new')}"></div>
+<div class="card"><div class="card-header"><form class="row g-2 align-items-center search-toolbar" method="get" action="/admin/products">
+    <div class="col-sm-7 search-query"><input class="form-control" type="search" name="q" th:value="${q}" placeholder="Search products" aria-label="Search products"></div><div class="col-sm-3 search-action"><button class="btn btn-primary" type="submit">Search products</button></div><div class="col-sm-2 search-action"><a class="btn btn-outline-secondary" href="/admin/products">Clear</a></div></form></div>
+    <div class="table-responsive" th:if="${page != null and !page.empty}"><table class="table"><thead><tr><th>Product</th><th>Type</th><th>Price</th><th>Tax</th><th>Status</th><th></th></tr></thead><tbody>
+        <tr th:each="product : ${page.content}"><td><a th:href="@{|/admin/products/${product.id}/edit|}" th:text="${product.name}">Professional</a></td><td th:text="${product.type.toString()}">SOFTWARE</td><td th:text="${@fmt.money(product.salesPrice)}">₹2,000.00</td><td th:text="|${product.tax.ratePercent}%|">18%</td><td><span th:replace="~{fragments/ui :: statusBadge(${product.active ? 'ACTIVE' : 'CLOSED'})}"></span></td><td><a th:href="@{|/admin/products/${product.id}/edit|}">Edit</a></td></tr>
+    </tbody></table></div><th:block th:if="${page == null or page.empty}"><div th:replace="~{fragments/ui :: emptyState(${q == null or q.isBlank() ? 'Add a product to make it available in plans.' : 'No products found. Try a different search.'})}"></div></th:block>
+    <div class="card-body border-top"><div th:replace="~{fragments/ui :: pagination(${page}, '/admin/products', ${q}, ${status}, null)}"></div></div>
+</div>
+</main></body></html>

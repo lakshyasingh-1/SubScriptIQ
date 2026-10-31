@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sign in · SubscriptIQ</title>
+    <link rel="icon" type="image/png" th:href="@{/images/subscriptiq-logo.png}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body>
+<main class="auth-wrap">
+    <div class="auth-layout">
+        <section class="auth-brand-panel" aria-labelledby="brandHeadline">
+            <a class="auth-brand auth-brand-light" href="/" aria-label="SubscriptIQ home">
+                <img class="brand-logo brand-logo-auth" th:src="@{/images/subscriptiq-logo.png}" alt="">
+                <span>Subscript<span class="brand-accent">IQ</span></span>
+            </a>
+            <div class="auth-brand-copy">
+                <p class="auth-kicker">SUBSCRIPTION MANAGEMENT, REIMAGINED</p>
+                <h1 id="brandHeadline">Subscriptions.<br><span>Simplified.</span></h1>
+                <p class="auth-brand-description">One clear view of every customer, billing cycle, and revenue milestone.</p>
+                <div class="auth-features" aria-label="Platform features">
+                    <div class="auth-feature"><span class="auth-feature-icon" aria-hidden="true">↻</span><span>Subscription Management</span></div>
+                    <div class="auth-feature"><span class="auth-feature-icon" aria-hidden="true">▤</span><span>Automated Billing</span></div>
+                    <div class="auth-feature"><span class="auth-feature-icon" aria-hidden="true">↗</span><span>Revenue Insights</span></div>
+                </div>
+            </div>
+            <div class="auth-brand-foot">A clearer way to grow recurring revenue.</div>
+            <div class="auth-decoration auth-decoration-one" aria-hidden="true"></div>
+            <div class="auth-decoration auth-decoration-two" aria-hidden="true"></div>
+        </section>
+        <section class="auth-form-panel" aria-labelledby="loginHeading">
+            <div class="auth-form-content">
+                <div class="auth-brand auth-brand-compact">
+                    <img class="brand-logo brand-logo-compact" th:src="@{/images/subscriptiq-logo.png}" alt="">
+                    <span>Subscript<span class="brand-accent">IQ</span></span>
+                </div>
+                <p class="eyebrow auth-form-eyebrow">YOUR WORKSPACE AWAITS</p>
+                <h2 id="loginHeading">Welcome back</h2>
+                <p class="auth-form-subtitle">Sign in to continue to your workspace.</p>
+                <div th:if="${param.error}" class="alert alert-danger auth-alert" role="alert">Email or password was not recognised.</div>
+                <div th:if="${param.logout}" class="alert alert-success auth-alert" role="status">You have been signed out.</div>
+                <div th:if="${registrationSuccess}" class="alert alert-success auth-alert" role="status">Account created. Sign in to continue.</div>
+                <form th:action="@{/login}" method="post" class="auth-login-form">
+                    <div class="auth-field"><label for="email" class="form-label">Email address</label><input id="email" name="username" type="email" class="form-control" autocomplete="username" placeholder="you@company.com" required></div>
+                    <div class="auth-field auth-password-field"><label for="password" class="form-label">Password</label><input id="password" name="password" type="password" class="form-control" autocomplete="current-password" placeholder="Enter your password" required></div>
+                    <button class="btn btn-primary auth-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="auth-form-foot">Secure access to your SubscriptIQ workspace.</p>
+                <p class="auth-form-foot">New to SubscriptIQ? <a th:href="@{/register}">Create an account</a></p>
+            </div>
+        </section>
+    </div>
+</main>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+</body></html>
